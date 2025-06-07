@@ -1,1 +1,3 @@
-# ts-for-node
+# TypeScript for NodeJS developers
+
+
