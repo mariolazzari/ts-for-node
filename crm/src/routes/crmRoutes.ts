@@ -6,12 +6,12 @@ import {
   deleteContact,
 } from "../controllers/crmController";
 
-const routes = app => {
+const routes = (app: any) => {
   app
     .route("/contact")
-    .get((req, res, next) => {
+    .get((req: Request, _res: Response, next: any) => {
       // middleware
-      console.log(`Request from: ${req.originalUrl}`);
+      console.log(`Request from: ${req.url}`);
       console.log(`Request type: ${req.method}`);
       next();
     }, getContacts)

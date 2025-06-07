@@ -1,56 +1,58 @@
 import mongoose from "mongoose";
 import { ContactSchema } from "../models/crmModel";
+import { Request, Response } from "express";
 
 const Contact = mongoose.model("Contact", ContactSchema);
 
-export const addNewContact = (req, res) => {
-  let newContact = new Contact(req.body);
+type Controller = (req: Request, res: Response) => Promise<void>;
 
-  newContact.save((err, contact) => {
-    if (err) {
-      res.send(err);
-    }
+export const addNewContact: Controller = async (req, res) => {
+  const newContact = new Contact(req.body);
+
+  try {
+    const contact = await newContact.save();
+    res.status(201).json(contact);
+  } catch (error) {
+    res.status(500).json(error);
+  }
+};
+
+export const getContacts: Controller = async (_req, res) => {
+  try {
+    const contacts = await Contact.find({});
+    res.json(contacts);
+  } catch (error) {
+    res.status(500).json(error);
+  }
+};
+
+export const getContactWithID: Controller = async (req, res) => {
+  try {
+    const contact = await Contact.findById(req.params.contactId);
     res.json(contact);
-  });
+  } catch (error) {
+    res.status(500).json(error);
+  }
 };
 
-export const getContacts = (req, res) => {
-  Contact.find({}, (err, contact) => {
-    if (err) {
-      res.send(err);
-    }
+export const updateContact: Controller = async (req, res) => {
+  try {
+    const contact = await Contact.findByIdAndUpdate(
+      req.params.contactId,
+      req.body,
+      { new: true }
+    );
     res.json(contact);
-  });
+  } catch (error) {
+    res.status(500).json(error);
+  }
 };
 
-export const getContactWithID = (req, res) => {
-  Contact.findById(req.params.contactId, (err, contact) => {
-    if (err) {
-      res.send(err);
-    }
+export const deleteContact: Controller = async (req, res) => {
+  try {
+    const contact = await Contact.findByIdAndDelete(req.params.contactId);
     res.json(contact);
-  });
-};
-
-export const updateContact = (req, res) => {
-  Contact.findOneAndUpdate(
-    { _id: req.params.contactId },
-    req.body,
-    { new: true },
-    (err, contact) => {
-      if (err) {
-        res.send(err);
-      }
-      res.json(contact);
-    }
-  );
-};
-
-export const deleteContact = (req, res) => {
-  Contact.remove({ _id: req.params.contactId }, (err, contact) => {
-    if (err) {
-      res.send(err);
-    }
-    res.json({ message: "Successfully deleted contact" });
-  });
+  } catch (error) {
+    res.status(500).json(error);
+  }
 };
