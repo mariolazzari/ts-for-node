@@ -19,3 +19,42 @@ pnpm i -D typescript @types/express @types/node ts-node
 ```json
 
 ```
+
+## TypeScript tools for NodeJs
+
+### Declaration merging
+
+```ts
+interface Warriors {
+  weapon: string;
+  skills: number;
+}
+
+interface Warriors {
+  name: string;
+}
+
+const ninja: Warriors = {
+  name: "Mario",
+  wepon: "gun",
+  skills: 1
+}
+```
+
+### Iterators
+
+```ts
+for(const contact of contacts){
+  console.log(contact.name);
+}
+
+for(const contactId in contacts){
+  console.log(contacts[contactId]);
+}
+```
+
+### Decorators
+
+```ts
+
+```
