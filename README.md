@@ -16,8 +16,21 @@ pnpm i -D typescript @types/express @types/node ts-node
 ```
 
 ### tsconfig.json
-```json
 
+```json
+{
+    "compilerOptions": {
+        "target": "es2022",
+        "module": "commonjs",
+        "strict": true,
+        "outDir": "./dist",
+        "esModuleInterop": true,
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true
+    },
+    "include": ["./src/**/*","index.ts"],
+    "exclude": ["node_modules"]
+}
 ```
 
 ## TypeScript tools for NodeJs
@@ -54,6 +67,41 @@ for(const contactId in contacts){
 ```
 
 ### Decorators
+
+TypeScript [docs](https://www.typescriptlang.org/docs/handbook/decorators.html)
+
+### Disposable
+
+```ts
+class TempFile implements Disposable {
+    #path: string;
+    #handle: number;
+
+    constructor(path: string) {
+        this.#path = path;
+        this.#handle = fs.openSync(path, "w+");
+    }
+
+    // other methods
+    [Symbol.dispose]() {
+        // Close the file and delete it.
+        fs.closeSync(this.#handle);
+        fs.unlinkSync(this.#path);
+    }
+}
+
+function doSomeWork() {
+    const file = new TempFile(".some_temp_file");
+    try {
+        // ...
+    }
+    finally {
+        file[Symbol.dispose]();
+    }
+}
+```
+
+### Suppressed errors
 
 ```ts
 
